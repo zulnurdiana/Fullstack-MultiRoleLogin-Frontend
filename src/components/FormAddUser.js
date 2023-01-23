@@ -1,0 +1,117 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const FormAddUser = () => {
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confPassword, setConfPassword] = useState("");
+  const [role, setRole] = useState("admin");
+  const [msg, setMsg] = useState("");
+
+  const addUsers = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:5000/users", {
+        name: name,
+        email: email,
+        password: password,
+        confPassword: confPassword,
+        role: role,
+      });
+      navigate("/users");
+    } catch (error) {
+      if (error.response) {
+        setMsg(error.response.data.msg);
+      }
+    }
+  };
+  return (
+    <div>
+      <h1 className="title">Users</h1>
+      <h2 className="subtitle">Add New User</h2>
+      <div class="card is-shadowless">
+        <div class="card-content">
+          <div class="content">
+            <p className="has-has-text-centered">{msg}</p>
+            <form onSubmit={addUsers}>
+              <div class="field">
+                <label class="label">Name</label>
+                <div class="control">
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={({ target }) => setName(target.value)}
+                    class="input"
+                    placeholder="Name"
+                  />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Email</label>
+                <div class="control">
+                  <input
+                    type="text"
+                    class="input"
+                    value={email}
+                    onChange={({ target }) => setEmail(target.value)}
+                    placeholder="Email"
+                  />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Password</label>
+                <div class="control">
+                  <input
+                    type="password"
+                    class="input"
+                    value={password}
+                    onChange={({ target }) => setPassword(target.value)}
+                    placeholder="******"
+                  />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Confirm Password</label>
+                <div class="control">
+                  <input
+                    type="password"
+                    class="input"
+                    value={confPassword}
+                    onChange={({ target }) => setConfPassword(target.value)}
+                    placeholder="******"
+                  />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Role</label>
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select
+                      value={role}
+                      onChange={({ target }) => setRole(target.value)}
+                    >
+                      <option value="admin">Admin</option>
+                      <option value="user">User</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <button type="submit" className="button is-success">
+                    Save
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FormAddUser;
